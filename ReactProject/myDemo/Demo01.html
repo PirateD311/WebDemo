@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="GBK">
+    <title></title>
+	
+</head>
+<style>
+	body{
+		font: 12px/1.5 tahoma,arial,SimSun;
+	}
+	body, dl, dd, h1, h2, h3, h4, h5, h6, p, form, pre, blockquote, figure {
+	margin: 0;
+	}
+	.demoClass{
+		background-color:green;
+		height:100px;
+	}
+	 .post-list{
+
+        line-height: 1.7;
+        padding-top: 40px;
+    }
+    .post-list img{
+        display: inline-block;
+    }
+    .post-list-header{
+        border-bottom: 1px solid #dcdcdc;
+        position: relative;
+        height: 40px;
+    }
+    .post-list-header span {
+
+    }
+	    .post-list-face{
+        margin-top: 10px;
+        padding-bottom: 20px;
+        width: 100%;
+        height: 100%;
+        border-bottom: 1px solid #dcdcdc;
+        overflow:  hidden;
+		min-height:50px;
+    }
+    .avatar{
+        height: 100%;
+        width: 50px;
+        display: inline-block;
+        float: left;
+        margin: 8px;
+    }
+    .avatar img {
+		display:inline-block;
+        height: 50px;
+        width: 50px;
+    }
+    .post-inf{
+
+        height: 100%;
+        width: 80% ;
+        display: inline-block;
+    }
+    .source{
+        font-size: 13px;
+    }
+    .post-link a{
+        color: #259;
+        font-size: 14px;
+        font-weight: 700;
+    }
+    .author{
+        color: inherit;
+        font-size: 13px;
+        font-weight: 700;
+    }
+    .content{
+        color: #000000;
+
+    }
+</style>
+<body id="body" style="background-color:#f9f9f9">
+<h2>My React Demo 01</h2>
+<div class="demoClass" id="container">This is container</div>
+<div id="container02">This is container 02</div>
+<div id="container03">This is container 03</div>
+<div id="container04">This is container 04</div>
+<div id="container05">This is container 05</div>
+<div id="container06" class="post-list">This is container 06</div>
+<script src="../react-0.13.3/build/react.min.js" type="text/javascript"></script>
+<script src="../react-0.13.3/build/JSXTransformer.js" type="text/javascript"></script>
+<script src="../../html/javascript/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script type="text/jsx">
+    var names=["Alice","Emily","Kate"];
+    var pamer={"a":"a","b":"b","code":"This is pamer'code"};
+    var html=[<div style="width:100%;background-color:red">hhh</div>];
+    var header=[<header style="height: 40px;width: 100%;background-color: gold">aaa</header>]
+    React.render(
+            <h1>Hello World ! pamer={pamer.code}</h1>,
+            document.getElementById("container")
+    );
+    React.render(
+            <div>
+                {names.map(function(name){
+                    return name+"," ;
+                })}
+            </div>,
+            document.getElementById('container02')
+    );
+    var HelloMessage = React.createClass({
+        render: function() {
+            return <h1>Hello {this.props.name}</h1>;
+        }
+    });
+
+    React.render(
+            <HelloMessage name="John" />,
+            document.getElementById('container03')
+    );
+
+    var NotesList = React.createClass({
+        render: function() {
+            return (
+                    <ol>
+                        {
+                            this.props.children.map(function (child) {
+                                return <li>{child}</li>
+                            })
+                        }
+                    </ol>
+            );
+        }
+    });
+
+    React.render(
+            <NotesList>
+                <span>hello</span>
+                <span>world</span>
+            </NotesList>,
+            document.getElementById("container04")
+    );
+	//React 组件（component）命名时首字母必须大写！ 否则不报错但内容无法显示！
+	var MyItem=React.createClass({
+		getInitialState: function () {
+				return {
+				  opacity: 0.5,
+				  className:"demoClass"				
+				};
+			  },
+		render:function(){
+			return  <div className={this.state.className} style={{opacity: this.state.opacity}} >aaaa
+					<input type="text" />
+					</div>
+		}
+	});
+
+	React.render(
+		<MyItem  />,
+		document.getElementById("container05")
+	);
+
+	//利用React生成帖子列表
+	jsonBox={};
+	 $.ajax({
+                url:"http://115.28.65.99/collegeAPI/job/queryAllJobs.php",
+                type:"POST",
+                data:"",
+				 async:false, 
+                success:function(resp){
+                    jsonBox = eval("("+resp+")");
+                    if(jsonBox!=null&jsonBox.length!=0){
+                        for(var i=0;i<jsonBox.length;i++){
+                         console.log("id:"+jsonBox[i].id+"#category1:"+jsonBox[i].category1+"#title:"+jsonBox[i].title+"#content:"+jsonBox[i].content);
+                         }
+                        
+                        return true;
+                    }else{
+                        alert("暂无帖子");
+                    }
+                },
+                error:function(){
+                    alert("error");
+                    return false;
+                }
+            });
+	//r jsonBox=[{"id":1,"code":"第一个"},{"id":2,"code":"第二个"},{"id":3,"code":"第三个"},{"id":4,"code":"第四个"}];
+	//id:53#category1:sport#title:啊哈如何让我和#content:<p>啊虽然哈哈哈</p>
+	var ListItem=React.createClass({
+			render:function(){
+				var page=this.props.data.content;
+				var categoryHref="http://115.28.65.99/html/post-list.html?category1="+this.props.data.category1;
+				var postviewHref="http://115.28.65.99/html/postview.html?postid="+this.props.data.id;
+				return (
+				  <div className={this.state.post_list_face}>
+					  <div className={this.state.avatar}><img /></div>
+					  <div className={this.state.post_inf}>
+						  <div className={this.state.source}>来自<a href={categoryHref}>{this.props.data.category1}</a></div>
+						  <div className={this.state.post_link}><h2><a href={postviewHref}>{this.props.data.title}</a></h2></div>
+						  <div className={this.state.author}>{this.props.data.author_nickname}</div>
+						  <div  className={this.state.content}><div dangerouslySetInnerHTML={{__html: page}} /><a href={postviewHref} >查看更多</a>
+						  </div>
+					  </div>
+				  </div>			
+				)
+			},
+			getInitialState:function(){
+				return{
+					post_list_face:"post-list-face",
+					avatar:"avatar",
+					source:"source",
+					post_link:"post-link",
+					author:"author",
+					post_inf:"post-inf",
+					content:"content"				
+				}
+				
+			}
+	
+	});
+	React.render(
+		<ul>
+			{
+				jsonBox.map(function(jsonInfo){
+					return <ListItem data={jsonInfo}/>
+				})
+			}
+			
+		</ul>
+		,
+		document.getElementById("container06")
+	);
+</script>
+</body>
+</html>
